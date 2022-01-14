@@ -6,6 +6,7 @@
 """
 from os.path import dirname
 
+from lxml.etree import HTML
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -25,7 +26,7 @@ class ImageAutoSearchAndSave:
         self.driver.get("https://pixabay.com/")
         # 搜索图片
         self._search_image()
-        # 遍历所有图片列表页面
+        # 遍历所有页面
         self._iter_all_page()
         print("========= 结束 =========")
 
@@ -35,8 +36,8 @@ class ImageAutoSearchAndSave:
         elem.send_keys(self.keyword + Keys.ENTER)
 
     def _iter_all_page(self):
-        """遍历所有图片列表页面"""
-        # 获取页面总数
+        """遍历所有页面"""
+        # 获取总页面
         elem = self.driver.find_element_by_css_selector("span[class^=total]")
         page_total = int(elem.text.strip("/ "))
         print(f"总页面数：{page_total}")
@@ -46,6 +47,7 @@ class ImageAutoSearchAndSave:
             print(f"正在访问第{page_num}页")
             if page_num > 1:
                 self.driver.get(f"{base_url}?pagi={page_num}&")
+
 
 
 if __name__ == '__main__':
