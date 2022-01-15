@@ -18,6 +18,7 @@ class ImageAutoSearchAndSave:
         """初始化"""
         self.driver = webdriver.Chrome(executable_path=dirname(__file__) + '/chromedriver.exe')
         self.keyword = keyword
+        self.all_detail_link = []
 
     def run(self):
         """开始运行"""
@@ -47,6 +48,12 @@ class ImageAutoSearchAndSave:
             print(f"正在访问第{page_num}页")
             if page_num > 1:
                 self.driver.get(f"{base_url}?pagi={page_num}&")
+            #  href属性
+            root = HTML(self.driver.page_source)
+            detail_links = root.xpath('//div[starts-with(@class, "results")]//a[starts-with(@class, "link")]/@href')
+            # print(detail_links)
+            for detail_link in detail_links:
+                self.all_detail_link.append(detail_link)
 
 
 
