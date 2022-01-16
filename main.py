@@ -14,10 +14,12 @@ from selenium.webdriver.common.keys import Keys
 class ImageAutoSearchAndSave:
     """图片自动搜索保存"""
 
-    def __init__(self, keyword):
+    def __init__(self, keyword, limit=0):
         """初始化"""
         self.driver = webdriver.Chrome(executable_path=dirname(__file__) + '/chromedriver.exe')
         self.keyword = keyword
+        self.limit = limit  # 0表示没有限制
+        self.count = 0  # 用来计数
         self.all_detail_link = []
 
     def run(self):
@@ -52,11 +54,20 @@ class ImageAutoSearchAndSave:
             root = HTML(self.driver.page_source)
             detail_links = root.xpath('//div[starts-with(@class, "results")]//a[starts-with(@class, "link")]/@href')
             # print(detail_links)
+            is_reach_limit = False
             for detail_link in detail_links:
                 self.all_detail_link.append(detail_link)
-
+                self.count += 1
+                if self.limit > 0 and self.count == self.limit:
+                    is_reach_limit = True
+                    print(f"已达到限制{self.limit}，结束收集图片详情页链接")
+                    break
+            if is_reach_limit:
+                break
+        print(f"共收集{len(self.all_detail_link)}个图片详情链接")
 
 
 if __name__ == '__main__':
     keyword = "sunflower"
-    ImageAutoSearchAndSave(keyword).run()
+    limit = 3
+    ImageAutoSearchAndSave(keyword, limit).run()
