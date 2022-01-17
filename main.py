@@ -21,6 +21,7 @@ class ImageAutoSearchAndSave:
         self.limit = limit  # 0表示没有限制
         self.count = 0  # 用来计数
         self.all_detail_link = []
+        self.all_download_link = []
 
     def run(self):
         """开始运行"""
@@ -31,6 +32,11 @@ class ImageAutoSearchAndSave:
         self._search_image()
         # 遍历所有页面
         self._iter_all_page()
+        # 访问图片详情页
+        self._visit_image_detail()
+        # 释放内存、释放资源
+        self.driver.close()
+        del self.all_detail_link
         print("========= 结束 =========")
 
     def _search_image(self):
@@ -66,8 +72,17 @@ class ImageAutoSearchAndSave:
                 break
         print(f"共收集{len(self.all_detail_link)}个图片详情链接")
 
+    def _visit_image_detail(self):
+        """访问图片详情页"""
+        for detail_link in self.all_detail_link:
+            self.driver.get(detail_link)
+            elem = self.driver.find_element_by_css_selector("#media_container > picture > img")
+            download_link = elem.get_attribute("src")
+            print(f"图片下载链接{download_link}")
+            self.all_download_link.append(download_link)
+
 
 if __name__ == '__main__':
     keyword = "sunflower"
-    limit = 3
+    limit = 2
     ImageAutoSearchAndSave(keyword, limit).run()
