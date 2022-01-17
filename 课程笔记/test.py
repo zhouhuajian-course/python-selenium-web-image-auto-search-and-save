@@ -24,7 +24,7 @@ all_used_image_filename = frozenset(all_markdown_used_image)
 # print(all_image_filename.difference(all_used_image_filename))
 all_need_del_image = all_image_filename.difference(all_used_image_filename)
 for need_del_image in all_need_del_image:
-    print(remove(f"image/{need_del_image}"))
+    print(remove(f"./image/{need_del_image}"))
 
 
 
